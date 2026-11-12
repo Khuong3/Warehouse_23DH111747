@@ -1,0 +1,44 @@
+@model Warehouse_23DH111747.Models.CategoryItem
+@{
+    ViewData["Title"] = "Sửa danh mục";
+}
+
+<div class="d-flex flex-wrap justify-content-between align-items-center border-bottom pb-3 mb-4 gap-2">
+    <h4 class="fw-bold text-primary mb-0">
+        Sửa Danh Mục
+    </h4>
+    <a asp-action="Index" class="btn btn-outline-secondary btn-sm">
+        &larr; Danh sách danh mục
+    </a>
+</div>
+
+@if (ViewBag.ErrorMessage != null)
+{
+    <div class="alert alert-danger border-start border-5 border-danger shadow-sm">
+        @ViewBag.ErrorMessage
+    </div>
+}
+
+<form asp-action="Edit" method="post" class="card border p-4 shadow-sm" style="max-width: 600px;">
+    @Html.AntiForgeryToken()
+    <input type="hidden" name="CategoryID" value="@Model.CategoryID" />
+
+    <div class="mb-3">
+        <label class="form-label fw-bold text-secondary">Mã danh mục</label>
+        <input type="text" class="form-control bg-secondary bg-opacity-10 fw-bold" value="@Model.CategoryID" readonly disabled />
+    </div>
+
+    <div class="mb-4">
+        <label class="form-label fw-bold">Tên danh mục <span class="text-danger">*</span></label>
+        <input type="text" name="CategoryName" value="@Model.CategoryName" class="form-control" />
+    </div>
+
+    <div class="d-flex gap-2">
+        <button type="submit" class="btn btn-primary px-4 fw-bold">
+            Lưu thay đổi
+        </button>
+        <a asp-action="Index" class="btn btn-outline-secondary">
+            Hủy
+        </a>
+    </div>
+</form>

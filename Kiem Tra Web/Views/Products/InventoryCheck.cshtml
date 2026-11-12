@@ -1,0 +1,99 @@
+@model Warehouse_23DH111747.Models.SingleInventoryCheckViewModel
+@{
+    ViewData["Title"] = "Cập nhật số lượng kiểm kê";
+}
+
+<div class="d-flex flex-wrap justify-content-between align-items-center border-bottom pb-3 mb-4 gap-2">
+    <h4 class="fw-bold text-primary mb-0">
+        Cập Nhật Số Lượng Theo Kiểm Kê
+    </h4>
+    <a asp-action="Index" class="btn btn-outline-secondary btn-sm">
+        &larr; Danh sách sản phẩm
+    </a>
+</div>
+
+@if (Model.IsSubmitted && !Model.IsSuccess)
+{
+    <div class="alert alert-danger border-start border-5 border-danger shadow-sm">
+        @Model.ErrorMessage
+    </div>
+}
+
+@if (Model.IsSubmitted && Model.IsSuccess)
+{
+    <div class="alert alert-success border-start border-5 border-success shadow-sm">
+        <h6 class="fw-bold mb-1">
+            Sản phẩm #@Model.UpdatedProductID - @Model.UpdatedProductName:
+            <span class="badge @Model.DiffBadgeClass fs-6 ms-1">@Model.DiffStatus</span>
+        </h6>
+        <div>
+            Số lượng cũ: <strong>@Model.OldQuantity</strong> &rarr;
+            Số lượng thực tế: <strong class="text-primary">@Model.NewQuantity</strong> |
+            Tình trạng mới: <span class="badge bg-dark">@Model.NewStockStatus</span>
+        </div>
+    </div>
+}
+
+<form asp-action="InventoryCheck" method="post" class="card bg-light border p-4 mb-4 shadow-sm">
+    @Html.AntiForgeryToken()
+    <div class="row g-3 align-items-end">
+        <div class="col-md-6">
+            <label class="form-label fw-bold">Sản phẩm:</label>
+            <select name="ProductID" class="form-select">
+                @foreach (var p in Model.Products)
+                {
+                    <option value="@p.ProductID" selected="@(Model.ProductID == p.ProductID)">
+                        #@p.ProductID - @p.ProductName (Tồn hiện tại: @p.Quantity)
+                    </option>
+                }
+            </select>
+        </div>
+        <div class="col-md-4">
+            <label class="form-label fw-bold">Số lượng thực tế mới:</label>
+            <input type="text" name="RawActualQuantity" value="@Model.RawActualQuantity" class="form-control" placeholder="Nhập số lượng thực tế..." />
+        </div>
+        <div class="col-md-2 d-grid">
+            <button type="submit" class="btn btn-primary fw-bold">
+                Cập nhật
+            </button>
+        </div>
+    </div>
+</form>
+
+<h6 class="fw-bold text-dark mb-3">Danh sách sản phẩm</h6>
+<div class="table-responsive">
+    <table class="table table-bordered table-hover align-middle mb-0">
+        <thead>
+            <tr class="text-center">
+                <th style="width: 90px;">Mã SP</th>
+                <th>Tên sản phẩm</th>
+                <th>Danh mục</th>
+                <th style="width: 150px;">Đơn giá</th>
+                <th style="width: 130px;">Số lượng</th>
+                <th style="width: 140px;">Tình trạng</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.Products)
+            {
+                bool isJustUpdated = Model.IsSubmitted && Model.IsSuccess && Model.UpdatedProductID == item.ProductID;
+                <tr class="@(isJustUpdated ? "table-success" : "")">
+                    <td class="text-center fw-bold">@item.ProductID</td>
+                    <td class="fw-semibold">
+                        @item.ProductName
+                        @if (isJustUpdated)
+                        {
+                            <span class="badge @Model.DiffBadgeClass ms-2">@Model.DiffStatus</span>
+                        }
+                    </td>
+                    <td>@item.Category</td>
+                    <td class="text-end fw-semibold text-primary">@item.Price.ToString("N2") đ</td>
+                    <td class="text-center fw-bold">@item.Quantity</td>
+                    <td class="text-center">
+                        <span class="badge @item.StockBadgeClass px-3 py-2">@item.StockStatus</span>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

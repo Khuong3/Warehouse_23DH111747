@@ -1,0 +1,99 @@
+@model Warehouse_23DH111747.Models.ProductEditViewModel
+@{
+    ViewData["Title"] = "Sửa thông tin sản phẩm";
+    var allProducts = ViewBag.AllProducts as List<Warehouse_23DH111747.Models.Product> ?? new List<Warehouse_23DH111747.Models.Product>();
+    var categories = ViewBag.Categories as List<Warehouse_23DH111747.Models.CategoryItem> ?? new List<Warehouse_23DH111747.Models.CategoryItem>();
+    var errorList = ViewBag.ErrorList as List<string>;
+    string priceDisplay = ViewBag.RawPrice as string ?? (Model.Price.HasValue ? Model.Price.Value.ToString("0.##", System.Globalization.CultureInfo.InvariantCulture) : "");
+}
+
+<div class="d-flex flex-wrap justify-content-between align-items-center border-bottom pb-3 mb-4 gap-2">
+    <h4 class="fw-bold text-primary mb-0">
+        Sửa Thông Tin Sản Phẩm
+    </h4>
+    <a asp-action="Index" class="btn btn-outline-secondary btn-sm">
+        &larr; Quay lại danh sách
+    </a>
+</div>
+
+<div class="card bg-light border-0 mb-4">
+    <div class="card-body py-2 px-3 d-flex flex-wrap align-items-center gap-2">
+        <span class="fw-semibold small text-secondary">Chọn sản phẩm:</span>
+        <div class="d-flex flex-wrap gap-1">
+            @foreach (var p in allProducts)
+            {
+                <a asp-action="Edit" asp-route-id="@p.ProductID"
+                   class="btn btn-sm @(p.ProductID == Model.ProductID ? "btn-primary fw-bold" : "btn-outline-dark")">
+                    #@p.ProductID - @p.ProductName
+                </a>
+            }
+        </div>
+    </div>
+</div>
+
+@if (errorList != null && errorList.Any())
+{
+    <div class="alert alert-danger border-start border-5 border-danger shadow-sm">
+        <ul class="mb-0">
+            @foreach (var err in errorList)
+            {
+                <li>@err</li>
+            }
+        </ul>
+    </div>
+}
+
+<form asp-action="Edit" method="post" class="card border shadow-sm p-4" style="max-width: 700px;">
+    @Html.AntiForgeryToken()
+    <input type="hidden" name="ProductID" value="@Model.ProductID" />
+
+    <div class="row g-3 mb-3">
+        <div class="col-md-6">
+            <label class="form-label fw-bold text-secondary">Mã sản phẩm</label>
+            <input type="text" class="form-control bg-secondary bg-opacity-10 fw-bold" value="@Model.ProductID" readonly disabled />
+        </div>
+        <div class="col-md-6">
+            <label class="form-label fw-bold text-secondary">Số lượng tồn kho</label>
+            <input type="text" class="form-control bg-secondary bg-opacity-10 fw-bold" value="@Model.Quantity" readonly disabled />
+        </div>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label fw-bold">Tên sản phẩm <span class="text-danger">*</span></label>
+        <input type="text" name="ProductName" class="form-control" value="@Model.ProductName" />
+    </div>
+
+    <div class="mb-3">
+        <div class="d-flex justify-content-between align-items-center mb-1">
+            <label class="form-label fw-bold mb-0">Danh mục <span class="text-danger">*</span></label>
+            <a asp-controller="Categories" asp-action="Index" class="small text-decoration-none">Quản lý danh mục</a>
+        </div>
+        <select name="Category" class="form-select">
+            <option value="">-- Chọn danh mục --</option>
+            @foreach (var c in categories)
+            {
+                <option value="@c.CategoryName" selected="@(Model.Category == c.CategoryName)">
+                    @c.CategoryName
+                </option>
+            }
+            @if (!string.IsNullOrWhiteSpace(Model.Category) && !categories.Any(c => c.CategoryName == Model.Category))
+            {
+                <option value="@Model.Category" selected>@Model.Category</option>
+            }
+        </select>
+    </div>
+
+    <div class="mb-4">
+        <label class="form-label fw-bold">Đơn giá <span class="text-danger">*</span></label>
+        <input type="number" step="0.01" name="Price" class="form-control" value="@priceDisplay" />
+    </div>
+
+    <div class="d-flex gap-2">
+        <button type="submit" class="btn btn-primary px-4 fw-bold">
+            Lưu thay đổi
+        </button>
+        <a asp-action="Index" class="btn btn-outline-secondary">
+            Hủy
+        </a>
+    </div>
+</form>

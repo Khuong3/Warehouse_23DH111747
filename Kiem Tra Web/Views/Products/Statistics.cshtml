@@ -1,0 +1,88 @@
+@model Warehouse_23DH111747.Models.WarehouseStatisticsViewModel
+@{
+    ViewData["Title"] = "Thống kê kho hàng";
+}
+
+<div class="d-flex flex-wrap justify-content-between align-items-center border-bottom pb-3 mb-4 gap-2">
+    <h4 class="fw-bold text-primary mb-0">
+        Thống Kê Kho Hàng
+    </h4>
+    <a asp-action="Index" class="btn btn-outline-secondary btn-sm">
+        &larr; Danh sách sản phẩm
+    </a>
+</div>
+
+<div class="row g-4 mb-4">
+    <div class="col-md-4">
+        <div class="card border-primary shadow-sm h-100">
+            <div class="card-body text-center p-4">
+                <div class="text-uppercase fw-bold text-primary small mb-2">
+                    Số Lượng Sản Phẩm
+                </div>
+                <div class="display-5 fw-bold text-dark">
+                    @Model.TotalProducts
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card border-danger shadow-sm h-100">
+            <div class="card-body text-center p-4">
+                <div class="text-uppercase fw-bold text-danger small mb-2">
+                    Số Sản Phẩm Hết Hàng
+                </div>
+                <div class="display-5 fw-bold text-danger">
+                    @Model.OutOfStockProducts
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card border-success shadow-sm h-100">
+            <div class="card-body text-center p-4">
+                <div class="text-uppercase fw-bold text-success small mb-2">
+                    Tổng Giá Trị Hàng Tồn
+                </div>
+                <div class="fs-2 fw-bold text-success">
+                    @Model.TotalInventoryValue.ToString("N2") đ
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="table-responsive">
+    <table class="table table-bordered table-hover align-middle mb-0">
+        <thead>
+            <tr class="text-center">
+                <th style="width: 90px;">Mã SP</th>
+                <th>Tên sản phẩm</th>
+                <th>Danh mục</th>
+                <th style="width: 150px;">Đơn giá</th>
+                <th style="width: 120px;">Số lượng</th>
+                <th style="width: 130px;">Tình trạng</th>
+                <th style="width: 180px;">Giá trị tồn</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.Products)
+            {
+                <tr>
+                    <td class="text-center fw-bold">@item.ProductID</td>
+                    <td class="fw-semibold">@item.ProductName</td>
+                    <td>@item.Category</td>
+                    <td class="text-end">@item.Price.ToString("N2") đ</td>
+                    <td class="text-center fw-bold">@item.Quantity</td>
+                    <td class="text-center">
+                        <span class="badge @item.StockBadgeClass px-3 py-2">@item.StockStatus</span>
+                    </td>
+                    <td class="text-end fw-bold text-success">
+                        @item.InventoryValue.ToString("N2") đ
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

@@ -1,0 +1,89 @@
+@model Warehouse_23DH111747.Models.ProductSearchViewModel
+@{
+    ViewData["Title"] = "Tra cứu hàng hóa";
+}
+
+<div class="d-flex flex-wrap justify-content-between align-items-center border-bottom pb-3 mb-4 gap-2">
+    <h4 class="fw-bold text-primary mb-0">
+        Tra Cứu Hàng Hóa
+    </h4>
+    <a asp-action="Search" class="btn btn-outline-secondary btn-sm">
+        Làm mới
+    </a>
+</div>
+
+<form asp-action="Search" method="get" class="card bg-light border p-3 mb-4 shadow-sm">
+    <div class="row g-3 align-items-end">
+        <div class="col-md-4">
+            <label class="form-label fw-bold small">Tên sản phẩm:</label>
+            <input type="text" name="keyword" value="@Model.Keyword" class="form-control" placeholder="Nhập tên sản phẩm..." />
+        </div>
+        <div class="col-md-3">
+            <label class="form-label fw-bold small">Tình trạng tồn kho:</label>
+            <select name="stockFilter" class="form-select">
+                <option value="" selected="@(string.IsNullOrEmpty(Model.StockFilter))">-- Tất cả --</option>
+                <option value="out" selected="@(Model.StockFilter == "out")">Hết hàng</option>
+                <option value="low" selected="@(Model.StockFilter == "low")">Sắp hết</option>
+                <option value="in" selected="@(Model.StockFilter == "in")">Đủ hàng</option>
+            </select>
+        </div>
+        <div class="col-md-3">
+            <label class="form-label fw-bold small">Sắp xếp theo giá:</label>
+            <select name="sortOrder" class="form-select">
+                <option value="" selected="@(string.IsNullOrEmpty(Model.SortOrder))">Mặc định</option>
+                <option value="price_asc" selected="@(Model.SortOrder == "price_asc")">Giá tăng dần</option>
+                <option value="price_desc" selected="@(Model.SortOrder == "price_desc")">Giá giảm dần</option>
+            </select>
+        </div>
+        <div class="col-md-2 d-grid">
+            <button type="submit" class="btn btn-primary fw-bold">
+                Tìm kiếm
+            </button>
+        </div>
+    </div>
+</form>
+
+@if (!Model.Results.Any())
+{
+    <div class="alert alert-warning border-start border-5 border-warning shadow-sm py-4 text-center">
+        <h6 class="fw-bold text-dark mb-0">Không tìm thấy sản phẩm nào phù hợp với điều kiện tra cứu.</h6>
+    </div>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table table-bordered table-hover align-middle mb-0">
+            <thead>
+                <tr class="text-center">
+                    <th style="width: 90px;">Mã SP</th>
+                    <th>Tên sản phẩm</th>
+                    <th>Danh mục</th>
+                    <th style="width: 160px;">Đơn giá</th>
+                    <th style="width: 120px;">Số lượng</th>
+                    <th style="width: 140px;">Tình trạng</th>
+                    <th style="width: 120px;">Thao tác</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.Results)
+                {
+                    <tr>
+                        <td class="text-center fw-bold">@item.ProductID</td>
+                        <td class="fw-semibold">@item.ProductName</td>
+                        <td>@item.Category</td>
+                        <td class="text-end fw-bold text-primary">@item.Price.ToString("N2") đ</td>
+                        <td class="text-center fw-bold">@item.Quantity</td>
+                        <td class="text-center">
+                            <span class="badge @item.StockBadgeClass px-3 py-2">@item.StockStatus</span>
+                        </td>
+                        <td class="text-center">
+                            <a asp-action="Edit" asp-route-id="@item.ProductID" class="btn btn-sm btn-warning fw-semibold">
+                                Sửa
+                            </a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}

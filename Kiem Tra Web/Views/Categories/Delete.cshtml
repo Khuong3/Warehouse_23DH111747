@@ -1,0 +1,47 @@
+@model Warehouse_23DH111747.Models.CategoryItem
+@{
+    ViewData["Title"] = "Xóa danh mục";
+    int usedCount = ViewBag.UsedCount != null ? (int)ViewBag.UsedCount : 0;
+}
+
+<div class="d-flex flex-wrap justify-content-between align-items-center border-bottom pb-3 mb-4 gap-2">
+    <h4 class="fw-bold text-danger mb-0">
+        Xóa Danh Mục
+    </h4>
+    <a asp-action="Index" class="btn btn-outline-secondary btn-sm">
+        &larr; Danh sách danh mục
+    </a>
+</div>
+
+<div class="card border p-4 shadow-sm" style="max-width: 600px;">
+    <p class="fs-6 mb-3">Bạn có chắc chắn muốn xóa danh mục này?</p>
+
+    <dl class="row mb-3">
+        <dt class="col-sm-4">Mã danh mục:</dt>
+        <dd class="col-sm-8 fw-bold">@Model.CategoryID</dd>
+
+        <dt class="col-sm-4">Tên danh mục:</dt>
+        <dd class="col-sm-8 fw-semibold">@Model.CategoryName</dd>
+
+        <dt class="col-sm-4">Số sản phẩm hiện có:</dt>
+        <dd class="col-sm-8"><span class="badge bg-secondary">@usedCount</span></dd>
+    </dl>
+
+    @if (usedCount > 0)
+    {
+        <div class="alert alert-warning mb-3">
+            Danh mục này đang có <strong>@usedCount</strong> sản phẩm nên không thể xóa.
+        </div>
+    }
+
+    <form asp-action="Delete" method="post" class="d-flex gap-2">
+        @Html.AntiForgeryToken()
+        <input type="hidden" name="CategoryID" value="@Model.CategoryID" />
+        <button type="submit" class="btn btn-danger px-4 fw-bold" @(usedCount > 0 ? "disabled" : "")>
+            Xác nhận xóa
+        </button>
+        <a asp-action="Index" class="btn btn-outline-secondary">
+            Hủy
+        </a>
+    </form>
+</div>

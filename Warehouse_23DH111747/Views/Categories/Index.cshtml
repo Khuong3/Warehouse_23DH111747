@@ -1,0 +1,61 @@
+@model List<Warehouse_23DH111747.Models.CategoryItem>
+@{
+    ViewData["Title"] = "Quản lý danh mục";
+    var productCounts = ViewBag.ProductCounts as Dictionary<int, int> ?? new Dictionary<int, int>();
+}
+
+<div class="d-flex flex-wrap justify-content-between align-items-center border-bottom pb-3 mb-4 gap-2">
+    <h4 class="fw-bold text-primary mb-0">
+        Danh Sách Danh Mục
+    </h4>
+    <a asp-action="Create" class="btn btn-success btn-sm">
+        + Thêm danh mục
+    </a>
+</div>
+
+<div class="table-responsive">
+    <table class="table table-bordered table-hover align-middle mb-0">
+        <thead>
+            <tr class="text-center">
+                <th style="width: 100px;">Mã DM</th>
+                <th>Tên danh mục</th>
+                <th style="width: 160px;">Số sản phẩm</th>
+                <th style="width: 180px;">Thao tác</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (!Model.Any())
+            {
+                <tr>
+                    <td colspan="4" class="text-center py-4 text-muted">
+                        Chưa có danh mục nào.
+                    </td>
+                </tr>
+            }
+            else
+            {
+                foreach (var item in Model)
+                {
+                    int count = productCounts.ContainsKey(item.CategoryID) ? productCounts[item.CategoryID] : 0;
+                    <tr>
+                        <td class="text-center fw-bold">@item.CategoryID</td>
+                        <td class="fw-semibold">@item.CategoryName</td>
+                        <td class="text-center">
+                            <span class="badge bg-secondary px-3 py-2">@count</span>
+                        </td>
+                        <td class="text-center">
+                            <div class="d-flex justify-content-center gap-1">
+                                <a asp-action="Edit" asp-route-id="@item.CategoryID" class="btn btn-sm btn-warning fw-semibold">
+                                    Sửa
+                                </a>
+                                <a asp-action="Delete" asp-route-id="@item.CategoryID" class="btn btn-sm btn-danger fw-semibold">
+                                    Xóa
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+</div>

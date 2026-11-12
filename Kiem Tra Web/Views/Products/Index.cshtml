@@ -1,0 +1,107 @@
+@model List<Warehouse_23DH111747.Models.Product>
+@{
+    ViewData["Title"] = "Danh sách sản phẩm";
+    var categories = ViewBag.Categories as List<Warehouse_23DH111747.Models.CategoryItem> ?? new List<Warehouse_23DH111747.Models.CategoryItem>();
+    string selectedCategory = ViewBag.SelectedCategory as string ?? string.Empty;
+}
+
+<div class="d-flex flex-wrap justify-content-between align-items-center border-bottom pb-3 mb-3 gap-2">
+    <h4 class="fw-bold text-primary mb-0">
+        Danh Sách Sản Phẩm
+    </h4>
+    <div class="d-flex flex-wrap gap-2">
+        <a asp-controller="Categories" asp-action="Index" class="btn btn-outline-dark btn-sm">
+            Quản lý danh mục
+        </a>
+        <a asp-action="Search" class="btn btn-outline-primary btn-sm">
+            Tra cứu hàng hóa
+        </a>
+        <a asp-action="Create" class="btn btn-success btn-sm">
+            + Thêm sản phẩm
+        </a>
+    </div>
+</div>
+
+<form asp-action="Index" method="get" class="row g-2 align-items-center mb-3">
+    <div class="col-auto">
+        <label class="col-form-label fw-semibold small">Lọc theo danh mục:</label>
+    </div>
+    <div class="col-auto" style="min-width: 240px;">
+        <select name="category" class="form-select form-select-sm" onchange="this.form.submit()">
+            <option value="">-- Tất cả danh mục --</option>
+            @foreach (var c in categories)
+            {
+                <option value="@c.CategoryName" selected="@(selectedCategory == c.CategoryName)">
+                    @c.CategoryName
+                </option>
+            }
+        </select>
+    </div>
+    @if (!string.IsNullOrWhiteSpace(selectedCategory))
+    {
+        <div class="col-auto">
+            <a asp-action="Index" class="btn btn-sm btn-outline-secondary">Bỏ lọc</a>
+        </div>
+    }
+</form>
+
+<div class="table-responsive">
+    <table class="table table-bordered table-hover align-middle mb-0">
+        <thead>
+            <tr class="text-center">
+                <th style="width: 80px;">Mã SP</th>
+                <th>Tên sản phẩm</th>
+                <th>Danh mục</th>
+                <th style="width: 140px;">Đơn giá</th>
+                <th style="width: 100px;">Số lượng</th>
+                <th style="width: 130px;">Tình trạng</th>
+                <th style="width: 210px;">Thao tác</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (!Model.Any())
+            {
+                <tr>
+                    <td colspan="7" class="text-center py-4 text-muted">
+                        Chưa có sản phẩm nào.
+                    </td>
+                </tr>
+            }
+            else
+            {
+                foreach (var item in Model)
+                {
+                    <tr>
+                        <td class="text-center fw-bold">@item.ProductID</td>
+                        <td class="fw-semibold">@item.ProductName</td>
+                        <td>@item.Category</td>
+                        <td class="text-end fw-semibold text-primary">
+                            @item.Price.ToString("N2") đ
+                        </td>
+                        <td class="text-center fw-bold">
+                            @item.Quantity
+                        </td>
+                        <td class="text-center">
+                            <span class="badge @item.StockBadgeClass px-3 py-2">
+                                @item.StockStatus
+                            </span>
+                        </td>
+                        <td class="text-center">
+                            <div class="d-flex justify-content-center gap-1">
+                                <a asp-action="Edit" asp-route-id="@item.ProductID" class="btn btn-sm btn-warning fw-semibold">
+                                    Sửa
+                                </a>
+                                <a asp-action="InventoryCheck" asp-route-id="@item.ProductID" class="btn btn-sm btn-info fw-semibold">
+                                    Kiểm kê
+                                </a>
+                                <a asp-action="Delete" asp-route-id="@item.ProductID" class="btn btn-sm btn-danger fw-semibold">
+                                    Xóa
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+</div>

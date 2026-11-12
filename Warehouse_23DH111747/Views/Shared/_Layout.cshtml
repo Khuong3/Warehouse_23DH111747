@@ -1,0 +1,201 @@
+@{
+    StudentInfoStore.DateOfBirth = "09/03/2005";
+    var currentAction = ViewContext.RouteData.Values["action"]?.ToString() ?? "Index";
+    var currentController = ViewContext.RouteData.Values["controller"]?.ToString() ?? "Products";
+}
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Quản Lý Kho Hàng</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <style>
+        body {
+            background-color: #f4f6f9;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        .exam-header {
+            background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%);
+            color: #ffffff;
+            padding: 14px 0;
+            border-bottom: 4px solid #38bdf8;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.12);
+        }
+        .student-badge {
+            background-color: rgba(255, 255, 255, 0.14);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 8px;
+            padding: 8px 16px;
+            font-size: 0.95rem;
+        }
+        .sidebar-card {
+            background: #ffffff;
+            border-radius: 10px;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+            overflow: hidden;
+        }
+        .sidebar-title {
+            background: #1e293b;
+            color: #ffffff;
+            font-weight: 700;
+            padding: 12px 16px;
+            font-size: 0.95rem;
+            letter-spacing: 0.3px;
+            text-transform: uppercase;
+        }
+        .left-menu .list-group-item {
+            border: none;
+            border-bottom: 1px solid #f1f5f9;
+            padding: 12px 16px;
+            font-weight: 500;
+            color: #334155;
+            transition: all 0.15s ease;
+        }
+        .left-menu .list-group-item:hover {
+            background-color: #eff6ff;
+            color: #1d4ed8;
+            padding-left: 20px;
+        }
+        .left-menu .list-group-item.active {
+            background-color: #1d4ed8;
+            color: #ffffff;
+            font-weight: 600;
+            border-left: 4px solid #38bdf8;
+        }
+        .exam-footer {
+            margin-top: auto;
+            background-color: #0f172a;
+            color: #f8fafc;
+            border-top: 3px solid #38bdf8;
+            padding: 14px 0;
+        }
+        .content-card {
+            background: #ffffff;
+            border-radius: 10px;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+            padding: 20px;
+        }
+        .table thead th {
+            background-color: #1e293b;
+            color: #ffffff;
+            font-weight: 600;
+            vertical-align: middle;
+        }
+    </style>
+</head>
+<body>
+    <header class="exam-header">
+        <div class="container-fluid px-4">
+            <div class="d-flex flex-wrap justify-content-between align-items-center gap-2">
+                <div>
+                    <a asp-controller="Products" asp-action="Index" class="text-white text-decoration-none">
+                        <h4 class="mb-0 fw-bold">
+                            HỆ THỐNG QUẢN LÝ KHO HÀNG
+                        </h4>
+                    </a>
+                </div>
+                <div class="student-badge d-flex align-items-center gap-3">
+                    <div>
+                        <div><strong>Họ và tên:</strong> <span class="text-warning fw-bold">@StudentInfoStore.FullName</span></div>
+                        <div><strong>MSSV:</strong> <span class="badge bg-info text-dark fw-bold fs-6">@StudentInfoStore.MSSV</span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="container-fluid px-4 my-4 flex-grow-1">
+        <div class="row g-4">
+            <div class="col-lg-3 col-md-4">
+                <div class="sidebar-card">
+                    <div class="sidebar-title">
+                        Danh Mục Chức Năng
+                    </div>
+                    <div class="list-group list-group-flush left-menu">
+                        <a asp-controller="Products" asp-action="Index"
+                           class="list-group-item list-group-item-action @(currentController == "Products" && currentAction == "Index" ? "active" : "")">
+                            Danh sách sản phẩm
+                        </a>
+                        <a asp-controller="Categories" asp-action="Index"
+                           class="list-group-item list-group-item-action @(currentController == "Categories" ? "active" : "")">
+                            Quản lý danh mục
+                        </a>
+                        <a asp-controller="Products" asp-action="Create"
+                           class="list-group-item list-group-item-action @(currentController == "Products" && currentAction == "Create" ? "active" : "")">
+                            Thêm sản phẩm mới
+                        </a>
+                        <a asp-controller="Products" asp-action="Edit"
+                           class="list-group-item list-group-item-action @(currentController == "Products" && currentAction == "Edit" ? "active" : "")">
+                            Sửa thông tin sản phẩm
+                        </a>
+                        <a asp-controller="Products" asp-action="Search"
+                           class="list-group-item list-group-item-action @(currentController == "Products" && currentAction == "Search" ? "active" : "")">
+                            Tra cứu hàng hóa
+                        </a>
+                        <a asp-controller="Products" asp-action="InventoryCheck"
+                           class="list-group-item list-group-item-action @(currentController == "Products" && currentAction == "InventoryCheck" ? "active" : "")">
+                            Cập nhật kiểm kê
+                        </a>
+                        <a asp-controller="Products" asp-action="DualInventoryCheck"
+                           class="list-group-item list-group-item-action @(currentController == "Products" && currentAction == "DualInventoryCheck" ? "active" : "")">
+                            Kiểm kê đồng thời 2 sản phẩm
+                        </a>
+                        <a asp-controller="Products" asp-action="Statistics"
+                           class="list-group-item list-group-item-action @(currentController == "Products" && currentAction == "Statistics" ? "active" : "")">
+                            Thống kê kho hàng
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-9 col-md-8">
+                @if (TempData["SuccessMessage"] != null)
+                {
+                    <div class="alert alert-success alert-dismissible fade show shadow-sm border-start border-5 border-success" role="alert">
+                        @TempData["SuccessMessage"]
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                }
+                @if (TempData["ErrorMessage"] != null)
+                {
+                    <div class="alert alert-danger alert-dismissible fade show shadow-sm border-start border-5 border-danger" role="alert">
+                        @TempData["ErrorMessage"]
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                }
+
+                <main role="main" class="content-card">
+                    @RenderBody()
+                </main>
+            </div>
+        </div>
+    </div>
+
+    <footer class="exam-footer">
+        <div class="container-fluid px-4">
+            <div class="d-flex flex-wrap justify-content-between align-items-center gap-2">
+                <div>
+                    <strong>Họ và tên:</strong> @StudentInfoStore.FullName
+                    <span class="mx-2">|</span>
+                    <strong>MSSV:</strong> @StudentInfoStore.MSSV
+                </div>
+                <div class="fs-6">
+                    Ngày tháng năm sinh: <strong>@StudentInfoStore.DateOfBirth</strong>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>
